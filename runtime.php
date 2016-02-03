@@ -1,21 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: jochen
- * Date: 2/02/2016
- * Time: 21:29
- */
-session_start();
-$runtime = Runtime::init();
-//$runtime->reset();
-$runtime->progress();
-$runtime->log('test');
-$runtime->finished();
-
-echo $runtime;
-exit;
-
 class Runtime
 {
     const FINISHED = 'finished';
@@ -24,25 +8,15 @@ class Runtime
     private $logs;
     private $status;
 
-    public static function init()
+    public function __construct($logs, $status)
     {
-        if (!($_SESSION['shell'] instanceof self))
-        {
-            $_SESSION['shell'] = new self();
-        }
-
-        return $_SESSION['shell'];
-    }
-
-    private function __construct()
-    {
-        $this->reset();
-        $this->progress();
+        $this->logs = $logs;
+        $this->status = $status;
     }
 
     public function log($line)
     {
-        $this->logs[] = array($line, date('H:i:s', time()));
+        $this->logs[] = array(strtolower($line), date('H:i:s', time()));
     }
 
     public function reset()
@@ -70,5 +44,63 @@ class Runtime
             )
         );
     }
+
+
+}
+
+class SH
+{
+    const LOGS = 'SHLOGS';
+    const STATUS = 'SHSTATUS';
+
+    /** @var  Runtime */
+    static $runtime;
+
+    public static function load()
+    {
+        if (is_object(self::$runtime))
+        {
+            return;
+        }
+
+        if (isset($_SESSION[self::LOGS]) && is_object($_SESSION[self::LOGS]))
+        {
+            self::$runtime = $_SESSION[self::LOGS];
+            return;
+        }
+
+        self::reset();
+    }
+
+    public static function log($line)
+    {
+        self::load();
+        self::$runtime->log($line);
+    }
+
+    public static function finish()
+    {
+        self::load();
+        self::$runtime->finished();
+    }
+
+    public static function flush()
+    {
+        self::load();
+        return (string)self::$runtime;
+    }
+
+    public static function reset()
+    {
+        $_SESSION[self::LOGS] = self::$runtime = new Runtime(
+            array(),
+            Runtime::PROGRESS
+        );
+    }
+}
+
+function __($line)
+{
+    SH::log($line);
 }
 

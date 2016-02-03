@@ -1,3 +1,8 @@
+<?php
+include('runtime.php');
+session_start();
+SH::reset();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +17,7 @@
 <script type="text/javascript">
     jQuery('document').ready(function ($) {
         shell.init($('#shell'), 'PHP CONSOLE');
-        shell.listen('runtime.php');
+        shell.execute('script.php');
     });
 </script>
 </body>
