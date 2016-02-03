@@ -1,0 +1,31 @@
+#shell {
+    width: 800px;
+    height: 600px;
+    background-color: black;
+    border-radius: 4px;
+    border: 1px solid black;
+    font-family: monospace;
+    margin: 0 auto;
+}
+
+#shell div.title {
+    width: 800px;
+    height: 25px;
+    background-color: darkblue;
+    color: indianred;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#shell div.line {
+    color: white;
+    padding-left: 10px;
+}
+
+#shell div.line .prefix {
+    color: darkgrey;
+    padding-right: 5px;
+}
